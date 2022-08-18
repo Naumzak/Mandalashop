@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+{{ goods.name }}<br><br>
+{% for k, v in  goods.get_price_per_weight.items%}
+    {{ k }} - {{ v }} <br>
+{% endfor %}<br>
+{% for i in  goods.ingredients.all%}<br>
+    {{ i.get_absolute_url }}
+{#    <a href="{{ i.get_absolute_url }}"> {{ i }}</a>#}
+{% endfor %}<br>
+</body>
+</html>

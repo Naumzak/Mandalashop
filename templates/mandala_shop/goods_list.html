@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+{% for goods in goods_list %}
+    <a href="{{ goods.get_absolute_url }}">{{ goods }}</a>
+{% endfor %}
+<nav class="list">
+    <ul>
+        {% for page in paginator.page_range %}
+            <li class="paginator">
+                <a href="?page={{ page }}">{{ page }}</a>
+
+            </li>
+        {% endfor %}
+    </ul>
+</nav>
+</body>
+</html>

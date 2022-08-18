@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+{% for category in category_list %}
+    {% if category.get_children %}
+        <a href="{{ category.get_absolute_url_category }}">{{ category}}</a>
+    {% else %}
+        <a href="{{ category.get_absolute_url_goods }}">{{ category}}</a>
+    {% endif %}
+{% endfor %}
+
+</body>
+</html>
