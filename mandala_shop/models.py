@@ -61,14 +61,13 @@ class Goods(models.Model):
                                  related_name='goods',
                                  on_delete=models.SET_NULL,
                                  null=True)
-
     name = models.CharField(max_length=150, db_index=True, verbose_name='название')
     slug = models.CharField(max_length=150, db_index=True, unique=True, verbose_name='Слаг')
     image = models.ImageField(upload_to='goods/', blank=True, null=True, verbose_name='Картинка')
     description = models.TextField(max_length=1000, blank=True, null=True, verbose_name='Описание')
     price = models.DecimalField(max_digits=10, decimal_places=2, verbose_name='Цена за минимальную единицу измерения')
     weight = models.ManyToManyField(Weight, verbose_name='Вес/Тара/Обьем')
-    ingredients = models.ManyToManyField("self", blank=True, verbose_name='Ингридиенты')
+    ingredients = models.ManyToManyField("self", blank=True, verbose_name='Ингридиенты', )
     hot = models.BooleanField(default=False, verbose_name='Острота')
     available = models.BooleanField(default=True, verbose_name='Наличие')
     created = models.DateTimeField(auto_now_add=True)
@@ -92,10 +91,11 @@ class Goods(models.Model):
         return ready_list_weight
 
     def get_absolute_url(self):
-        return reverse('goods_detail', kwargs={"slug": self.category.slug, "goods_slug": self.slug})
+        return reverse('goods_detail', kwargs={"category_slug": self.category.slug, "goods_slug": self.slug})
 
 
 class Basket(models.Model):
-    user_id = models.OneToOneField(User, on_delete=models.CASCADE)
-    products = models.ManyToManyField(Goods)
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
     count = models.JSONField(blank=True, null=True)
+
+

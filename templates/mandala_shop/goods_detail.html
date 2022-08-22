@@ -9,9 +9,8 @@
 {% for k, v in  goods.get_price_per_weight.items%}
     {{ k }} - {{ v }} <br>
 {% endfor %}<br>
-{% for i in  goods.ingredients.all%}<br>
-    {{ i.get_absolute_url }}
-{#    <a href="{{ i.get_absolute_url }}"> {{ i }}</a>#}
+{% for i in  ingredients%}<br>
+    <a href="{{ i.get_absolute_url }}"> {{ i }}</a>
 {% endfor %}<br>
 </body>
 </html>
