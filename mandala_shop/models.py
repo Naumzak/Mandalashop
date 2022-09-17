@@ -96,6 +96,6 @@ class Goods(models.Model):
 
 class Basket(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    count = models.JSONField(blank=True, null=True)
+    detail = models.JSONField(default={}, blank=True)
 
 
