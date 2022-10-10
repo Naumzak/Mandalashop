@@ -1,9 +1,16 @@
-<form method="post">
-    {% csrf_token %}
-    {{ form.non_field_errors }}
-    {% for f in form %}
-        <p><label class="form-label" for="{{ f.id_for_label }}">{{ f.label }}:</label>{{ f }}</p>
-        <div class="form-error">{{ f.errors }}</div>
-    {% endfor %}
-    <button type="submit">Регистрация</button>
-</form>
+{% extends 'mandala_shop/base.html' %}
+{% load static %}
+{% block content %}
+    <form method="post">
+        {% csrf_token %}
+        {{ form.non_field_errors }}
+        {% for f in form %}
+            <p><label class="form-label" for="{{ f.id_for_label }}">{{ f.label }}:</label><br>{{ f }}</p>
+            <div class="form-error">{{ f.errors }}</div>
+        {% endfor %}
+        <button type="submit">Увійти</button>
+    </form>
+    <form method="get" action="{% url "register" %}">
+        <button type="submit">Реєстрація</button>
+    </form>
+{% endblock %}

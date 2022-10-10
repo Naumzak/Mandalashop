@@ -49,7 +49,7 @@
         <div class="mobile-nav">
             <!-- Navbar Brand -->
             <div class="amado-navbar-brand">
-                <a href="index.html"><img src="{% static 'img/core-img/logo.png' %}" alt=""></a>
+                <a href="{% url 'category_list' %}"><img src="{% static 'img/core-img/logo.png' %}" alt=""></a>
             </div>
             <!-- Navbar Toggler -->
             <div class="amado-navbar-toggler">
@@ -65,36 +65,27 @@
             </div>
             <!-- Logo -->
             <div class="logo">
-                <a href="index.html"><img src="{% static 'img/core-img/logo.png' %}" alt=""></a>
-            </div>
-            <!-- Amado Nav -->
-            <nav class="amado-nav">
-                <ul>
-                    <li><a href="index.html">Home</a></li>
-                    <li><a href="shop.html">Shop</a></li>
-                    <li><a href="product-details.html">Product</a></li>
-                    <li class="active"><a href="cart.html">Cart</a></li>
-                    <li><a href="checkout.html">Checkout</a></li>
-                </ul>
-            </nav>
-            <!-- Button Group -->
-            <div class="amado-btn-group mt-30 mb-100">
-                <a href="#" class="btn amado-btn mb-15">%Discount%</a>
-                <a href="#" class="btn amado-btn active">New this week</a>
+                <a href="{% url 'category_list' %}"><img src="{% static 'img/core-img/logo.png' %}" alt=""></a>
             </div>
             <!-- Cart Menu -->
             <div class="cart-fav-search mb-100">
-                <a href="cart.html" class="cart-nav"><img src="{% static 'img/core-img/cart.png' %}" alt=""> Cart <span>(0)</span></a>
-                <a href="#" class="fav-nav"><img src="{% static 'img/core-img/favorites.png' %}" alt=""> Favourite</a>
-                <a href="#" class="search-nav"><img src="{% static 'img/core-img/search.png' %}" alt=""> Search</a>
+                <a href="#" class="search-nav"><img src="{% static 'img/core-img/search.png' %}" alt=""> Пошук</a>
+                <a href="{% url 'category_list' %}" class="cart-nav"><img src="{% static 'img/core-img/category.png' %}" alt=""> Категорії</a>
+                <a href="{% url 'cart' %}" class="cart-nav"><img src="{% static 'img/core-img/cart.png' %}" alt=""> Кошик</a>
+                {% if user.is_authenticated %}
+                    <a href="{% url 'logout' %}" class="cart-nav"><img src="{% static 'img/core-img/account.png' %}" alt=""> Вийти</a>
+                {% else %}
+                    <a href="{% url 'login' %}" class="cart-nav"><img src="{% static 'img/core-img/account.png' %}" alt=""> Увійти</a>
+                {% endif %}
+
             </div>
             <!-- Social Button -->
-            <div class="social-info d-flex justify-content-between">
-                <a href="#"><i class="fa fa-pinterest" aria-hidden="true"></i></a>
-                <a href="#"><i class="fa fa-instagram" aria-hidden="true"></i></a>
-                <a href="#"><i class="fa fa-facebook" aria-hidden="true"></i></a>
-                <a href="#"><i class="fa fa-twitter" aria-hidden="true"></i></a>
-            </div>
+{#            <div class="social-info d-flex justify-content-between">#}
+{#                <a href="#"><i class="fa fa-pinterest" aria-hidden="true"></i></a>#}
+{#                <a href="#"><i class="fa fa-instagram" aria-hidden="true"></i></a>#}
+{#                <a href="#"><i class="fa fa-facebook" aria-hidden="true"></i></a>#}
+{#                <a href="#"><i class="fa fa-twitter" aria-hidden="true"></i></a>#}
+{#            </div>#}
         </header>
     <!--Header Area End -->
 
@@ -115,7 +106,7 @@
                     <div class="single_widget_area">
                         <!-- Logo -->
                         <div class="footer-logo mr-50">
-                            <a href="index.html"><img src="{% static 'img/core-img/logo2.png' %}" alt=""></a>
+                            <a href="index.html"><img src="{% static 'img/core-img/logo.png' %}" alt=""></a>
                         </div>
                         <!-- Copywrite Text -->
                         <p class="copywrite"><!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
@@ -133,19 +124,13 @@ Copyright &copy;<script>document.write(new Date().getFullYear());</script> All r
                                 <div class="collapse navbar-collapse" id="footerNavContent">
                                     <ul class="navbar-nav ml-auto">
                                         <li class="nav-item active">
-                                            <a class="nav-link" href="index.html">Home</a>
+                                            <a class="nav-link" href="{% url 'category_list' %}">Головна</a>
                                         </li>
                                         <li class="nav-item">
-                                            <a class="nav-link" href="shop.html">Shop</a>
+                                            <a class="nav-link" href="{% url 'cart' %}">Кошик</a>
                                         </li>
                                         <li class="nav-item">
-                                            <a class="nav-link" href="product-details.html">Product</a>
-                                        </li>
-                                        <li class="nav-item">
-                                            <a class="nav-link" href="cart.html">Cart</a>
-                                        </li>
-                                        <li class="nav-item">
-                                            <a class="nav-link" href="checkout.html">Checkout</a>
+                                            <a class="nav-link" href="#">Про Нас</a>
                                         </li>
                                     </ul>
                                 </div>

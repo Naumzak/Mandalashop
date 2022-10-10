@@ -1,11 +1,32 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+{% extends 'mandala_shop/base.html' %}
+{% load static %}
+{% block content %}
+        <!-- Product Catagories Area Start -->
+        <div class="products-catagories-area clearfix">
+            <div class="amado-pro-catagory clearfix">
+                {% for category in category_list %}
+                    <!-- Single Catagory -->
+                    <div class="single-products-catagory clearfix">
+                    {% if category.get_children %}
+                        <a href="{{ category.get_absolute_url_category }}">
+                    {% else %}
+                        <a href="{{ category.get_absolute_url_goods }}">
+                    {% endif %}
+                            <img src="{{ category.get_image }}" alt="">
+                            <!-- Hover Content -->
+                            <div class="hover-content">
+                                <div class="line"></div>
+                                <h4>{{ category}}</h4>
+                            </div>
+                        </a>
+                    </div>
+                {% endfor %}
 
+            </div>
+        </div>
+        <!-- Product Catagories Area End -->
+    <!-- ##### Main Content Wrapper End ##### -->
+{% endblock %}
 {% for category in category_list %}
     {% if category.get_children %}
         <a href="{{ category.get_absolute_url_category }}">{{ category}}</a>
@@ -14,5 +35,3 @@
     {% endif %}
 {% endfor %}
 
-</body>
-</html>

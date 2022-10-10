@@ -3,9 +3,12 @@ from django.urls import reverse
 from mptt.models import MPTTModel, TreeForeignKey, TreeManyToManyField
 from django.contrib.auth.models import User
 
+from phonenumber_field.modelfields import PhoneNumberField
+
 
 class Category(MPTTModel):
     name = models.CharField(max_length=100)
+    image = models.ImageField(upload_to='category/', null=True, verbose_name='Картинка')
     slug = models.SlugField(max_length=100)
     parent = TreeForeignKey(
         'self',
@@ -33,6 +36,12 @@ class Category(MPTTModel):
 
     def get_absolute_url_goods(self):
         return reverse('goods_list', kwargs={"slug": self.slug})
+
+    def get_image(self):
+        try:
+            return self.image.url
+        except:
+            return None
 
 
 class Weight(models.Model):
@@ -63,7 +72,7 @@ class Goods(models.Model):
                                  null=True)
     name = models.CharField(max_length=150, db_index=True, verbose_name='название')
     slug = models.CharField(max_length=150, db_index=True, unique=True, verbose_name='Слаг')
-    image = models.ImageField(upload_to='goods/', blank=True, null=True, verbose_name='Картинка')
+    image = models.ImageField(upload_to='goods/', null=True, verbose_name='Картинка')
     description = models.TextField(max_length=1000, blank=True, null=True, verbose_name='Описание')
     price = models.DecimalField(max_digits=10, decimal_places=2, verbose_name='Цена за минимальную единицу измерения')
     weight = models.ManyToManyField(Weight, verbose_name='Вес/Тара/Обьем')
@@ -90,12 +99,46 @@ class Goods(models.Model):
             ready_list_weight[i] = i.weight * self.price
         return ready_list_weight
 
+    def get_min_price(self):
+        for i in self.weight.all():
+            return i.weight * self.price
+
     def get_absolute_url(self):
         return reverse('goods_detail', kwargs={"category_slug": self.category.slug, "goods_slug": self.slug})
 
+    def get_image(self):
+        try:
+            return self.image.url
+        except:
+            return None
 
-class Basket(models.Model):
+
+class Cart(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    detail = models.JSONField(default={}, blank=True)
+    detail = models.JSONField(default={'total_cart_price': 0, 'items': {}})
 
 
+class DeliveryAddress(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE, null=True, blank=True)
+    first_name = models.CharField(max_length=30, null=False, blank=False)
+    last_name = models.CharField(max_length=30, null=False, blank=False)
+    email = models.EmailField(max_length=50, null=False, blank=False)
+    city = models.CharField(max_length=50, null=False, blank=False)
+    department_number = models.CharField(max_length=10, null=False, blank=False)
+    phone = PhoneNumberField(null=False, blank=False, )
+    created = models.DateTimeField(auto_created=True, auto_now=True)
+
+
+class Order(models.Model):
+    STATUS = (
+        ('accepted', 'Прийнятий'),
+        ('sent', 'Надісланий'),
+        ('received', 'Отриманий'),
+    )
+    delivery_address = models.ForeignKey(DeliveryAddress, on_delete=models.PROTECT)
+    cart = models.JSONField(default={})
+    status = models.CharField(
+        max_length=8,
+        choices=STATUS,
+        default='accepted',
+    )

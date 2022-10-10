@@ -1,22 +1,108 @@
-    <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
-{% for goods in goods_list %}
-    <a href="{{ goods.get_absolute_url }}">{{ goods }}</a>
-{% endfor %}
-<nav class="list">
-    <ul>
-        {% for page in paginator.page_range %}
-            <li class="paginator">
-                <a href="?page={{ page }}">{{ page }}</a>
+{% extends 'mandala_shop/base.html' %}
+{% load static %}
+{% block content %}
+            <div class="shop_sidebar_area">
 
-            </li>
-        {% endfor %}
-    </ul>
-</nav>
-</body>
-</html>
+            <!-- ##### Single Widget ##### -->
+            <div class="widget catagory mb-50">
+                <!-- Widget Title -->
+                <h6 class="widget-title mb-30">Catagories</h6>
+
+                <!--  Catagories  -->
+                <div class="catagories-menu">
+                    <ul>
+                        <li class="active"><a href="#">Chairs</a></li>
+                        <li><a href="#">Beds</a></li>
+                        <li><a href="#">Accesories</a></li>
+                        <li><a href="#">Furniture</a></li>
+                        <li><a href="#">Home Deco</a></li>
+                        <li><a href="#">Dressings</a></li>
+                        <li><a href="#">Tables</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- ##### Single Widget ##### -->
+            <div class="widget price mb-50">
+                <!-- Widget Title -->
+                <h6 class="widget-title mb-30">Price</h6>
+
+                <div class="widget-desc">
+                    <div class="slider-range">
+                        <div data-min="10" data-max="1000" data-unit="$" class="slider-range-price ui-slider ui-slider-horizontal ui-widget ui-widget-content ui-corner-all" data-value-min="10" data-value-max="1000" data-label-result="">
+                            <div class="ui-slider-range ui-widget-header ui-corner-all"></div>
+                            <span class="ui-slider-handle ui-state-default ui-corner-all" tabindex="0"></span>
+                            <span class="ui-slider-handle ui-state-default ui-corner-all" tabindex="0"></span>
+                        </div>
+                        <div class="range-price">$10 - $1000</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="amado_product_area section-padding-100">
+            <div class="container-fluid">
+
+                <div class="row">
+                    <div class="col-12">
+                        <div class="product-topbar d-xl-flex align-items-end justify-content-between">
+                            <!-- Total Products -->
+                            <div class="total-products">
+                                <p>Showing 1-8 0f 25</p>
+                            </div>
+                            <!-- Sorting -->
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    {% for goods in goods_list %}
+                        <!-- Single Product Area -->
+                        <div class="col-12 col-sm-6 col-md-12 col-xl-6">
+                            <div class="single-product-wrapper">
+                                <a href="{{ goods.get_absolute_url }}">
+                                    <!-- Product Image -->
+                                    <div class="product-img">
+                                        <img src="{{ goods.get_image }}" alt="" style="max-height: 300px; width: auto">
+                                        <!-- Hover Thumb -->
+                                        <img class="hover-img" src="{{ goods.get_image }}" alt="" style="max-height: 300px; width: auto">
+                                    </div>
+
+                                    <!-- Product Description -->
+                                    <div class="product-description d-flex align-items-center justify-content-between">
+                                        <!-- Product Meta Data -->
+                                        <div class="product-meta-data">
+                                            <div class="line"></div>
+                                            <p class="product-price">Від ₴{{ goods.get_min_price }}</p>
+                                                <h6>{{ goods.name }}</h6>
+                                        </div>
+                                    </div>
+                                </a>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+
+                <div class="row">
+                    <div class="col-12">
+                        <!-- Pagination -->
+                        <nav aria-label="navigation">
+                            <ul class="pagination justify-content-end mt-50">
+                                {% for page in paginator.page_range %}
+                                    {% if page == current_page %}
+                                    <li class="paginator page-item active">
+                                    {% else %}
+                                    <li class="paginator page-item">
+                                    {% endif %}
+                                        <a class="page-link" href="?page={{ page }}">{{ page }}</a>
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                        </nav>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+    <!-- ##### Main Content Wrapper End ##### -->

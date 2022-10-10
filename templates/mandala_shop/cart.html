@@ -1,4 +1,3 @@
-
 {% extends 'mandala_shop/base.html' %}
 {% load static %}
 {% block content %}
@@ -15,75 +14,60 @@
                         <thead>
                             <tr>
                                 <th></th>
-                                <th>Name</th>
-                                <th>Price</th>
-                                <th>Quantity</th>
+                                <th>Назва</th>
+                                <th>Тара</th>
+                                <th>Ціна</th>
+                                <th>Кількість</th>
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <td class="cart_product_img">
-                                    <a href="#"><img src="{% static 'img/bg-img/cart1.jpg' %}" alt="Product"></a>
-                                </td>
-                                <td class="cart_product_desc">
-                                    <h5>White Modern Chair</h5>
-                                </td>
-                                <td class="price">
-                                    <span>$130</span>
-                                </td>
-                                <td class="qty">
-                                    <div class="qty-btn d-flex">
-                                        <p>Qty</p>
-                                        <div class="quantity">
-                                            <span class="qty-minus" onclick="var effect = document.getElementById('qty'); var qty = effect.value; if( !isNaN( qty ) &amp;&amp; qty &gt; 1 ) effect.value--;return false;"><i class="fa fa-minus" aria-hidden="true"></i></span>
-                                            <input type="number" class="qty-text" id="qty" step="1" min="1" max="300" name="quantity" value="1">
-                                            <span class="qty-plus" onclick="var effect = document.getElementById('qty'); var qty = effect.value; if( !isNaN( qty )) effect.value++;return false;"><i class="fa fa-plus" aria-hidden="true"></i></span>
-                                        </div>
-                                    </div>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="cart_product_img">
-                                    <a href="#"><img src="{% static 'img/bg-img/cart2.jpg' %}" alt="Product"></a>
-                                </td>
-                                <td class="cart_product_desc">
-                                    <h5>Minimal Plant Pot</h5>
-                                </td>
-                                <td class="price">
-                                    <span>$10</span>
-                                </td>
-                                <td class="qty">
-                                    <div class="qty-btn d-flex">
-                                        <p>Qty</p>
-                                        <div class="quantity">
-                                            <span class="qty-minus" onclick="var effect = document.getElementById('qty2'); var qty = effect.value; if( !isNaN( qty ) &amp;&amp; qty &gt; 1 ) effect.value--;return false;"><i class="fa fa-minus" aria-hidden="true"></i></span>
-                                            <input type="number" class="qty-text" id="qty2" step="1" min="1" max="300" name="quantity" value="1">
-                                            <span class="qty-plus" onclick="var effect = document.getElementById('qty2'); var qty = effect.value; if( !isNaN( qty )) effect.value++;return false;"><i class="fa fa-plus" aria-hidden="true"></i></span>
-                                        </div>
-                                    </div>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="cart_product_img">
-                                    <a href="#"><img src="img/bg-img/cart3.jpg" alt="Product"></a>
-                                </td>
-                                <td class="cart_product_desc">
-                                    <h5>Minimal Plant Pot</h5>
-                                </td>
-                                <td class="price">
-                                    <span>$10</span>
-                                </td>
-                                <td class="qty">
-                                    <div class="qty-btn d-flex">
-                                        <p>Qty</p>
-                                        <div class="quantity">
-                                            <span class="qty-minus" onclick="var effect = document.getElementById('qty3'); var qty = effect.value; if( !isNaN( qty ) &amp;&amp; qty &gt; 1 ) effect.value--;return false;"><i class="fa fa-minus" aria-hidden="true"></i></span>
-                                            <input type="number" class="qty-text" id="qty3" step="1" min="1" max="300" name="quantity" value="1">
-                                            <span class="qty-plus" onclick="var effect = document.getElementById('qty3'); var qty = effect.value; if( !isNaN( qty )) effect.value++;return false;"><i class="fa fa-plus" aria-hidden="true"></i></span>
-                                        </div>
-                                    </div>
-                                </td>
-                            </tr>
+                            {% for item, info in cart.items.items  %}
+                                {% for tare, detail in info.type.items %}
+                                    <tr>
+                                        <td class="cart_product_img">
+                                            <a href="#"><img src="{{ info.img}}" alt="Product"></a>
+                                        </td>
+                                        <td class="cart_product_desc">
+                                            <h5>{{ info.name}}</h5>
+                                        </td>
+                                        <td class="price">
+                                            <span>{{ tare}}</span>
+                                        </td>
+                                        <td class="price">
+                                            <span>{{ detail.total_price }}</span>
+                                        </td>
+                                        <td class="qty">
+                                            <div class="qty-btn d-flex">
+                                                <div class="quantity">
+                                                    <form action="{% url "remove_item" %}" method="post">
+{#                                                    <span class="qty-minus"><i class="fa fa-minus" aria-hidden="true"></i>#}
+                                                                                                            {% csrf_token %}
+                                                        <input type="hidden" name="item" value="{{ item }}">
+                                                        <input type="hidden" name="tare" value="{{ tare }}"></span>
+                                                        <button type="submit" class="qty-minus" style="border: none; margin-right: 50px;  font-size: large">-</button>
+                                                    </form>
+                                                    <input type="number" class="qty-text" id="qty" step="1" min="1" max="300" name="quantity" value="{{ detail.quantity }}" style="width: 100px">
+                                                    <form action="{% url "add_item" %}" method="post">
+                                                        {% csrf_token %}
+                                                        <input type="hidden" name="item" value="{{ item }}">
+                                                        <input type="hidden" name="tare" value="{{ tare }}">
+                                                        <input type="hidden" name="path" value="{% url "cart" %}">
+                                                        <input type="hidden" name="quantity" value=1>
+                                                        <input type="hidden" name="price" value={{ detail.price }}>
+                                                        <button type="submit" class="qty-plus" style="border: none;  font-size: large">+</button>
+                                                    </form>
+                                                </div>
+                                                                                                    <form action="{% url "delete_item" %}" method="post">
+                                                        {% csrf_token %}
+                                                        <input type="hidden" name="item" value="{{ item }}">
+                                                        <input type="hidden" name="tare" value="{{ tare }}">
+                                                        <button type="submit" class="qty-minus" style="border: none;  font-size: large; margin: 5px 0 0 5px;">Видалити</button>
+                                                    </form>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            {% endfor %}
                         </tbody>
                     </table>
                 </div>
@@ -92,12 +76,18 @@
                 <div class="cart-summary">
                     <h5>Cart Total</h5>
                     <ul class="summary-table">
-                        <li><span>subtotal:</span> <span>$140.00</span></li>
-                        <li><span>delivery:</span> <span>Free</span></li>
-                        <li><span>total:</span> <span>$140.00</span></li>
+                        <li><span>Сума:</span> <span>{{ cart.total_cart_price }}</span></li>
+                        <li><span>Доставка:</span> <span>Безкоштовно</span></li>
+                        <li><span>Разом:</span> <span>{{ cart.total_cart_price }}</span></li>
                     </ul>
                     <div class="cart-btn mt-100">
-                        <a href="cart.html" class="btn amado-btn w-100">Checkout</a>
+                        <form method="get" action="{% url 'checkout' %}">
+                            {% if cart.total_cart_price and cart.total_cart_price != '0.00'  %}
+                                <button type="submit" class="btn amado-btn w-100" >Оплата</button>
+                            {% else %}
+                                <button type="submit" class="btn amado-btn w-100" disabled>Оплата</button>
+                            {% endif %}
+                        </form>
                     </div>
                         </div>
                     </div>

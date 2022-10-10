@@ -5,19 +5,19 @@
     <title>Title</title>
 </head>
 <body>
-{% for item, detail in basket.items  %}
+{% for item, detail in cart.items  %}
    {{ detail.name}}<br>
     {% for tare, detail in detail.type.items %}
-        --{{ tare }} - {{ detail.count }}
+        --{{ tare }} - {{ detail.quantity }}
         <br>
         {{ detail.total_price }}
-{#        {% widthratio detail.count 1 detail.price %}#}
+{#        {% widthratio detail.quantity 1 detail.price %}#}
         <form action="{% url "add_item" %}" method="post">
         {% csrf_token %}
         <input type="hidden" name="item" value="{{ item }}">
         <input type="hidden" name="tare" value="{{ tare }}">
-        <input type="hidden" name="path" value="{% url "basket" %}">
-        <input type="hidden" name="count" value=1>
+        <input type="hidden" name="path" value="{% url "cart" %}">
+        <input type="hidden" name="quantity" value=1>
         <input type="hidden" name="price" value={{ detail.price }}>
         <button type="submit">+1</button>
         </form>
