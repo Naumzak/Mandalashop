@@ -19,7 +19,7 @@ from .forms import *
 
 # My classes
 from mandala_shop.my_classes.cart_formation import CartFormation, TransferData, TypeCart
-from mandala_shop.my_classes.delivery_formation import DeliveryForm, OrderFormation
+from mandala_shop.my_classes.delivery_formation import DeliveryFormation, OrderFormation
 
 
 class CategoryListView(ListView):
@@ -28,16 +28,18 @@ class CategoryListView(ListView):
     def get_queryset(self):
         slug = self.kwargs.get('slug')
         if slug:
+            """Send subcategory list"""
             parent_object = Category.objects.get(slug=slug)
             return Category.get_children(parent_object)
         else:
+            """Send category list"""
             category = Category.objects.filter(parent=None)
             return category
 
 
 class GoodsListView(ListView):
     model = Goods
-    paginate_by = 3
+    paginate_by = 10
 
     def get_queryset(self):
         slug = self.kwargs.get('slug')
@@ -71,12 +73,9 @@ class RegisterUser(CreateView):
 
     # auto login after register:
     def form_valid(self, form):
-        # save the new user first
+        """save the new user first"""
         form.save()
-        # get the username and password
-        username = self.request.POST['username']
-        password = self.request.POST['password1']
-        # authenticate user then login
+        """authenticate user then login"""
         user = authenticate(username=form.cleaned_data['username'], password=form.cleaned_data['password1'], )
         login(self.request, user)
         cart = CartFormation(request=self.request, type_cart=TypeCart.MODEL)
@@ -92,7 +91,7 @@ class LoginUser(LoginView):
     def form_valid(self, form):
         form_valid = super().form_valid(form)
         user = form.get_user()
-        transfer_cart = TransferData(user=user)
+        transfer_cart = TransferData(user=user)  # If user has cart in session, transfer it to model
         data = self.request.session.get('cart', {})
         transfer_cart.add_data(data)
         return form_valid
@@ -105,9 +104,14 @@ class LogoutUser(LogoutView):
 
 def checkout(request):
     if request.method == "GET":
+        """Open checkout template"""
         user = request.user
         context = {}
         if not isinstance(user, AnonymousUser):
+            """
+            We fill in the data for the order if the user is authorized
+            and his data is saved
+            """
             cart_data = Cart.objects.get(user=user).detail
             if DeliveryAddress.objects.get(user=user):
                 context['data'] = DeliveryAddress.objects.get(user=user)
@@ -122,10 +126,10 @@ def checkout(request):
         total_cart_price = data.get('total_cart_price')
         user = request.user
         cart_data = request.POST.get('cart_data', {})
-        delivery_address = DeliveryForm(data, user)
-        delivery = delivery_address.create_delivery()
+        delivery_address = DeliveryFormation(data, user)
+        delivery = delivery_address.create_delivery()  # Create delivery address model and save it
         order = OrderFormation(delivery_address=delivery, cart=cart_data)
-        order.create_order()
+        order.create_order()  # Create order model and save it
         request.session['total_cart_price'] = total_cart_price
         return redirect('payment')
 
@@ -196,6 +200,7 @@ def transfer_cart(request):
 
 
 def payment(request, *args, **kwargs):
+    """Test payment api"""
     api = Api(merchant_id=1396424,
               secret_key='test')
     checkout = Checkout(api=api)

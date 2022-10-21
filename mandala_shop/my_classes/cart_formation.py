@@ -60,60 +60,55 @@ class CartItemsUpdate:
         }
     """
 
-    def __init__(self, cart, item, tare, quantity, price):
+    def __init__(self, cart):
         self.cart = cart
-        self.item = item
-        self.tare = tare
-        self.quantity = quantity
-        self.price = price
 
-    def add_item(self):
+    def add_item(self, item, tare, quantity, price):
         items_dict = self.cart.get('items')
         if items_dict is None:
             items_dict = self.cart['items'] = {}
-        item_detail = items_dict.get(self.item)
-        dec_price = decimal.Decimal('.'.join(self.price.split(',')))
+        item_detail = items_dict.get(item)
+        dec_price = decimal.Decimal('.'.join(price.split(',')))
         if item_detail:
-            if item_detail['type'].get(self.tare):
-                tare_detail = item_detail['type'][self.tare]
-                tare_detail['quantity'] += self.quantity
+            if item_detail['type'].get(tare):
+                tare_detail = item_detail['type'][tare]
+                tare_detail['quantity'] += quantity
                 tare_detail['total_price'] = str(dec_price * tare_detail['quantity'])
             else:
-                item_detail['type'][self.tare] = {
-                    'quantity': self.quantity,
-                    'price': self.price,
-                    'total_price': str(dec_price * self.quantity)
+                item_detail['type'][tare] = {
+                    'quantity': quantity,
+                    'price': price,
+                    'total_price': str(dec_price * quantity)
                 }
         else:
-            items_dict[self.item] = {
+            items_dict[item] = {
                 'type':
                     {
-                        self.tare: {
-                            'quantity': self.quantity,
-                            'price': self.price,
-                            'total_price': str(dec_price * self.quantity)
+                        tare: {
+                            'quantity': quantity,
+                            'price': price,
+                            'total_price': str(dec_price * quantity)
                         }
                     },
-                'img': str(Goods.objects.get(slug=self.item).get_image()),
-                'name': Goods.objects.get(slug=self.item).name
+                'img': str(Goods.objects.get(slug=item).get_image()),
+                'name': Goods.objects.get(slug=item).name
             }
 
-    def remove_item(self):
-        info = self.cart['items'][self.item]['type'][self.tare]
+    def remove_item(self, item, tare):
+        info = self.cart['items'][item]['type'][tare]
         dec_price = decimal.Decimal('.'.join(info['price'].split(',')))
         if info and info['quantity'] > 1:
             info['quantity'] -= 1
             info['total_price'] = str(dec_price * info['quantity'])
         elif info and info['quantity'] == 1:
-            self.delete_item()
+            self.delete_item(item, tare)
 
-    def delete_item(self):
-        item = self.cart['items'][self.item]
-        if item['type'][self.tare]:
-            del item['type'][self.tare]
+    def delete_item(self, item_name, tare):
+        item = self.cart['items'][item_name]
+        if item['type'][tare]:
+            del item['type'][tare]
             if not item['type']:
-                del item
-            # self.cart_model.save()
+                del self.cart['items'][item_name]
         pass
 
 
@@ -161,14 +156,14 @@ class CartFormation(AbstractCartFormation, ABC):
             cart.save()
 
     def update_cart(self, item, tare, quantity=0, price='0.00', delete=False):
-        cart = CartUpdate(self.cart, item, tare, quantity, price)
+        cart = CartUpdate(self.cart)
         if delete:
-            cart.delete_item()
+            cart.delete_item(item, tare)
         else:
             if quantity > 0:
-                cart.add_item()
+                cart.add_item(item, tare, quantity, price)
             elif quantity < 0:
-                cart.remove_item()
+                cart.remove_item(item, tare)
         cart.update_total_cart_price()
         self.save_cart()
 

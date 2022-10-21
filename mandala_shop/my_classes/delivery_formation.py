@@ -4,7 +4,7 @@ from mandala_shop.models import Order, DeliveryAddress, Cart
 from django.contrib.auth.models import AnonymousUser
 
 
-class DeliveryForm:
+class DeliveryFormation:
     def __init__(self, data, user):
         if isinstance(user, AnonymousUser):
             self.user = None
@@ -43,7 +43,7 @@ class DeliveryForm:
 
 
 class OrderFormation:
-    def __init__(self, delivery_address: DeliveryForm, cart: dict):
+    def __init__(self, delivery_address: DeliveryFormation, cart: dict):
         self.delivery_address = delivery_address
         self.cart = cart
 

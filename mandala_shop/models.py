@@ -1,15 +1,15 @@
 from django.db import models
 from django.urls import reverse
-from mptt.models import MPTTModel, TreeForeignKey, TreeManyToManyField
+from mptt.models import MPTTModel, TreeForeignKey
 from django.contrib.auth.models import User
 
 from phonenumber_field.modelfields import PhoneNumberField
 
 
 class Category(MPTTModel):
-    name = models.CharField(max_length=100)
+    name = models.CharField(max_length=50)
     image = models.ImageField(upload_to='category/', null=True, verbose_name='Картинка')
-    slug = models.SlugField(max_length=100)
+    slug = models.SlugField(max_length=50)
     parent = TreeForeignKey(
         'self',
         related_name='children',
@@ -29,7 +29,7 @@ class Category(MPTTModel):
         return self.name
 
     def check_children(self):
-        return self.get_children()
+        return bool(self.get_children())
 
     def get_absolute_url_category(self):
         return reverse('subcategory_list', kwargs={"slug": self.slug})
@@ -57,21 +57,13 @@ class Weight(models.Model):
         ordering = ['type_weight', 'weight']
 
 
-class Test(models.Model):
-    name = models.CharField(max_length=150, db_index=True)
-    ingredients = models.ManyToManyField("self", blank=True)
-
-    def __str__(self):
-        return self.name
-
-
 class Goods(models.Model):
     category = models.ForeignKey(Category,
                                  related_name='goods',
                                  on_delete=models.SET_NULL,
                                  null=True)
-    name = models.CharField(max_length=150, db_index=True, verbose_name='название')
-    slug = models.CharField(max_length=150, db_index=True, unique=True, verbose_name='Слаг')
+    name = models.CharField(max_length=100, db_index=True, verbose_name='название')
+    slug = models.CharField(max_length=50, db_index=True, unique=True, verbose_name='Слаг')
     image = models.ImageField(upload_to='goods/', null=True, verbose_name='Картинка')
     description = models.TextField(max_length=1000, blank=True, null=True, verbose_name='Описание')
     price = models.DecimalField(max_digits=10, decimal_places=2, verbose_name='Цена за минимальную единицу измерения')

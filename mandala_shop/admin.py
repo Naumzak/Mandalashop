@@ -13,7 +13,6 @@ class GoodsAdmin(admin.ModelAdmin):
 admin.site.register(models.Category)
 admin.site.register(models.Weight)
 admin.site.register(models.Goods, GoodsAdmin)
-admin.site.register(models.Test)
 admin.site.register(models.Cart)
 admin.site.register(models.Order)
 admin.site.register(models.DeliveryAddress)
