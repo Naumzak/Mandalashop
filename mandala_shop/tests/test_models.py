@@ -92,13 +92,6 @@ class GoodsModelTest(ModelsSettings):
         self.assertEqual(goods.get_image(), None)
 
 
-class CartModelTest(ModelsSettings):
-    def test_detail(self):
-        cart = Cart.objects.get(id=1)
-        right_json = {'total_cart_price': 0, 'items': {}}
-        self.assertEqual(cart.detail, right_json)
-
-
 class DeliveryAddressModelTest(ModelsSettings):
     def test_first_name_max_length(self):
         delivery_address = DeliveryAddress.objects.get(id=1)
@@ -109,3 +102,10 @@ class DeliveryAddressModelTest(ModelsSettings):
         delivery_address = DeliveryAddress.objects.get(id=1)
         max_length = delivery_address._meta.get_field('last_name').max_length
         self.assertEqual(max_length, 30)
+
+
+class CartModelTest(ModelsSettings):
+    def test_detail(self):
+        cart = Cart.objects.get(user__first_name='TestUser')
+        right_json = {'total_cart_price': 0, 'items': {}}
+        self.assertEqual(cart.detail, right_json)

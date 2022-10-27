@@ -39,8 +39,8 @@ class ModelsSettings(TestCase):
             hot=False,
             available=True
         )
-        weight_1 = Weight.objects.get(id=1)
-        weight_2 = Weight.objects.get(id=2)
+        weight_1 = Weight.objects.get(weight=50)
+        weight_2 = Weight.objects.get(weight=100)
         goods_1.weight.add(weight_1, weight_2)
         goods_2.weight.add(weight_1, weight_2)
         user_1 = User.objects.create_user('TestUser', 'TestUser@email.com', '12345')
