@@ -175,10 +175,11 @@ def delete_item(request):
 
 
 def remove_item(request):
+    """remove item from cart"""
     if isinstance(request.user, AnonymousUser):
-        type_cart = TypeCart.SESSION
+        type_cart = TypeCart.SESSION  # if cart in session
     else:
-        type_cart = TypeCart.MODEL
+        type_cart = TypeCart.MODEL  # if cart in db
     if request.method == "POST":
         cart = CartFormation(request, type_cart)
         item = request.POST.get('item')
@@ -189,6 +190,7 @@ def remove_item(request):
 
 
 def transfer_cart(request):
+    """do transfer cart from session to db"""
     if request.method == "GET":
         user = request.user
         data = request.session.get('cart', {})
